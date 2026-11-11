@@ -4,10 +4,10 @@ plugins {
 }
 
 android {
-    namespace = "com.mia.personal"
+    namespace = "com.mia.app"
     compileSdk = 35
     defaultConfig {
-        applicationId = "com.mia.personal"
+        applicationId = "com.mia.app"
         minSdk = 23
         targetSdk = 35
         versionCode = 2
