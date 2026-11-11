@@ -39,6 +39,8 @@ public class MainActivity extends Activity {
         s.setJavaScriptCanOpenWindowsAutomatically(true);
         s.setSupportMultipleWindows(false);
         s.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
+        // Fetch the live Netlify deployment instead of serving a stale cached page.
+        s.setCacheMode(WebSettings.LOAD_NO_CACHE);
         web.setWebViewClient(new WebViewClient() {
             @Override public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 Uri u = request.getUrl();
@@ -115,6 +117,11 @@ public class MainActivity extends Activity {
     @Override protected void onSaveInstanceState(Bundle out) {
         if (web != null) web.saveState(out);
         super.onSaveInstanceState(out);
+    }
+
+    @Override protected void onResume() {
+        super.onResume();
+        if (web != null) web.reload();
     }
 
     @Override public void onBackPressed() {
