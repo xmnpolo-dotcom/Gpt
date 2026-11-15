@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#10131b">
+<title>MIA · TikTok Connection Analyzer</title>
+<style>
+:root{color-scheme:dark;--bg:#10131b;--panel:#1a2030;--muted:#9aa6bb;--blue:#55b9ff;--gold:#f5c76b;--line:#30394c}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(160deg,#121a29,#0d1017 60%);color:#f4f7fb;font:16px system-ui,-apple-system,Segoe UI,sans-serif;padding:18px;max-width:760px;margin:auto}
+header{padding:16px 4px 20px}h1{font-size:26px;margin:0 0 5px}h1 span{color:var(--blue)}p{color:var(--muted);line-height:1.45;margin:7px 0}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px;margin:12px 0;box-shadow:0 8px 28px #0003}
+label{display:block;color:var(--muted);font-size:13px;margin:0 0 7px}
+input,select{width:100%;background:#101521;color:white;border:1px solid var(--line);border-radius:12px;padding:13px;font-size:16px;margin-bottom:13px}
+button{border:0;border-radius:13px;padding:14px 16px;font-size:16px;font-weight:700;cursor:pointer}
+.primary{background:linear-gradient(90deg,#168bdb,#55b9ff);color:#06111c;width:100%}.secondary{background:#293448;color:#eaf3ff}
+button:disabled{opacity:.5}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.metric{background:#111723;border:1px solid var(--line);border-radius:14px;padding:13px;min-height:90px}
+.metric b{display:block;font-size:25px;margin:5px 0}.metric small{color:var(--muted)}
+.status{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:14px;margin-top:12px}
+.dot{width:9px;height:9px;border-radius:50%;background:#68758b}.dot.live{background:#5ee0a0;box-shadow:0 0 12px #5ee0a0}
+.progress{height:7px;background:#0c111a;border-radius:20px;overflow:hidden;margin-top:12px}.bar{height:100%;width:0;background:linear-gradient(90deg,#168bdb,#f5c76b);transition:width .2s}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:9px 6px;border-bottom:1px solid var(--line)}th{color:var(--muted);font-weight:600}
+.note{font-size:13px;color:var(--muted)}.good{color:#69dfa6}.warn{color:var(--gold)}.bad{color:#ff8d8d}
+.actions{display:flex;gap:8px;flex-wrap:wrap}.actions button{flex:1}footer{text-align:center;color:#77849a;font-size:12px;padding:15px}
+@media(min-width:520px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+</style></head><body>
+<header><h1><span>MIA</span> · Connection Analyzer</h1><p>Comprueba la calidad de tu conexión y compara los lugares desde los que publicas en TikTok.</p></header>
+<section class="panel">
+<label for="place">¿Dónde estás haciendo la prueba?</label><input id="place" placeholder="Ej. habitación, salón, jardín..." maxlength="40">
+<label for="kind">Conexión utilizada</label><select id="kind"><option>WiFi</option><option>Datos móviles 4G</option><option>Datos móviles 5G</option><option>Otra</option></select>
+<div class="note" id="networkInfo">Preparando información de red del dispositivo…</div><div style="height:12px"></div>
+<button class="primary" id="start">▶ INICIAR ANÁLISIS</button><div class="status"><span class="dot" id="dot"></span><span id="status">Listo para medir</span></div><div class="progress"><div class="bar" id="bar"></div></div></section>
+<section class="panel"><h3 style="margin:0 0 12px">Resultado de la conexión</h3><div class="grid">
+<div class="metric"><small>Descarga</small><b id="down">—</b><small>Mbps</small></div><div class="metric"><small>Subida</small><b id="up">—</b><small>Mbps</small></div><div class="metric"><small>Ping medio</small><b id="ping">—</b><small>ms</small></div><div class="metric"><small>Jitter</small><b id="jitter">—</b><small>ms</small></div><div class="metric"><small>Fallos de respuesta</small><b id="loss">—</b><small>de 8 pruebas</small></div><div class="metric"><small>Calidad estimada</small><b id="quality">—</b><small id="qualityHint">A la espera del análisis</small></div></div><p class="note" id="diagnosis">Haz una prueba para ver el diagnóstico.</p></section>
+<section class="panel"><h3 style="margin:0 0 8px">Historial de ubicaciones</h3><p class="note">Los resultados se guardan en este dispositivo. Repite la prueba en distintos sitios y a distintas horas.</p><div style="overflow-x:auto"><table><thead><tr><th>Lugar</th><th>Red</th><th>Bajada</th><th>Subida</th><th>Ping</th><th>Hora</th></tr></thead><tbody id="history"><tr><td colspan="6" class="note">Todavía no hay mediciones.</td></tr></tbody></table></div><div class="actions" style="margin-top:12px"><button class="secondary" id="csv">Exportar CSV</button><button class="secondary" id="clear">Borrar historial</button></div></section>
+<section class="panel"><h3 style="margin:0 0 8px">Qué puede decirnos esto sobre TikTok</h3><p class="note">Una subida lenta o inestable puede hacer que publicar sea más difícil. Un ping/jitter alto puede indicar una conexión irregular. Pero estas pruebas no acceden al algoritmo, al estado de tu cuenta ni a la distribución de tus vídeos.</p><p class="note">El navegador tampoco permite leer con fiabilidad la intensidad exacta de señal WiFi, la ruta interna de TikTok ni la pérdida real de paquetes del móvil. Los fallos mostrados son fallos de respuesta a las pruebas de latencia.</p></section>
+<footer>MIA · Herramienta de diagnóstico local · No inicia sesión ni accede a tu cuenta de TikTok.</footer>
+<script>
+const $=id=>document.getElementById(id),endpoint='https://speed.cloudflare.com';let busy=false;
+function netInfo(){const c=navigator.connection||navigator.mozConnection||navigator.webkitConnection;if(!c){$('networkInfo').textContent='El navegador no facilita detalles técnicos de la red. Selecciona manualmente el tipo de conexión.';return}const a=[];if(c.effectiveType)a.push('Tipo estimado: '+c.effectiveType);if(c.downlink)a.push('Bajada estimada: '+c.downlink+' Mbps');if(c.rtt)a.push('RTT estimado: '+c.rtt+' ms');$('networkInfo').textContent=a.join(' · ')||'Información de red limitada.'}netInfo();
+function setStatus(s,p){$('status').textContent=s;$('bar').style.width=p+'%'}
+async function latency(){let v=[],fails=0;for(let i=0;i<8;i++){try{const t=performance.now(),r=await fetch(endpoint+'/cdn-cgi/trace?mia='+Date.now()+'_'+i,{cache:'no-store'});if(!r.ok)throw Error();await r.text();v.push(performance.now()-t)}catch(e){fails++}}v.sort((a,b)=>a-b);return{avg:v.length?v.reduce((a,b)=>a+b,0)/v.length:null,jitter:v.length>1?v.slice(1).reduce((s,x,i)=>s+Math.abs(x-v[i]),0)/(v.length-1):null,fails}}
+async function download(){const t=performance.now(),r=await fetch(endpoint+'/__down?bytes=8000000&mia='+Date.now(),{cache:'no-store'});if(!r.ok)throw Error('Descarga no disponible');const b=await r.arrayBuffer();return b.byteLength*8/1e6/((performance.now()-t)/1000)}
+async function upload(){const n=3000000,a=new Uint8Array(n);let s=Date.now()>>>0;for(let i=0;i<n;i++){s=(s*1664525+1013904223)>>>0;a[i]=s>>>24}const t=performance.now(),r=await fetch(endpoint+'/__up?mia='+Date.now(),{method:'POST',body:a,headers:{'Content-Type':'application/octet-stream'},cache:'no-store'});if(!r.ok)throw Error('Subida no disponible');await r.text().catch(()=>{});return n*8/1e6/((performance.now()-t)/1000)}
+function quality(d,u,p,j,l){if(d==null||u==null||p==null)return['INCOMPLETO','No se pudieron completar todas las pruebas.','warn'];let s=0;if(u>=10)s+=2;else if(u>=3)s++;if(d>=25)s+=2;else if(d>=8)s++;if(p<60)s+=2;else if(p<120)s++;if(j<20)s+=2;else if(j<50)s++;if(l===0)s+=2;else if(l<=2)s++;return s>=8?['MUY BUENA','Conexión sólida en esta prueba.','good']:s>=5?['ACEPTABLE','Puede servir, aunque hay margen de mejora.','warn']:['IRREGULAR','La conexión podría dificultar subidas estables.','bad']}
+function hist(){try{return JSON.parse(localStorage.getItem('mia_conn_history')||'[]')}catch(e){return[]}}function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function render(){const h=hist();$('history').innerHTML=h.length?h.map(x=>'<tr><td>'+esc(x.place)+'</td><td>'+esc(x.kind)+'</td><td>'+x.down.toFixed(1)+'</td><td>'+x.up.toFixed(1)+'</td><td>'+x.ping.toFixed(0)+' ms</td><td>'+esc(x.date)+'</td></tr>').join(''):'<tr><td colspan="6" class="note">Todavía no hay mediciones.</td></tr>'}render();
+$('start').onclick=async()=>{if(busy)return;busy=true;$('start').disabled=true;$('dot').classList.add('live');['down','up','ping','jitter','loss','quality'].forEach(x=>$(x).textContent='…');let d=null,u=null,p=null,j=null,l=8,err=[];
+try{setStatus('Midiendo latencia y estabilidad…',10);const a=await latency();p=a.avg;j=a.jitter;l=a.fails;$('ping').textContent=p==null?'—':p.toFixed(0);$('jitter').textContent=j==null?'—':j.toFixed(0);$('loss').textContent=l}catch(e){err.push('latencia')}
+try{setStatus('Midiendo velocidad de descarga…',45);d=await download();$('down').textContent=d.toFixed(1)}catch(e){err.push('descarga')}
+try{setStatus('Midiendo velocidad de subida…',75);u=await upload();$('up').textContent=u.toFixed(1)}catch(e){err.push('subida')}
+const q=quality(d,u,p,j,l);$('quality').textContent=q[0];$('quality').className=q[2];$('qualityHint').textContent=q[1];$('diagnosis').textContent=err.length?'No se pudieron completar: '+err.join(', ')+'. Puede que la red o el navegador bloquee el servidor de prueba.':q[1]+' Es una estimación, no una medición de TikTok.';
+if(d!=null&&u!=null&&p!=null){const item={place:$('place').value.trim()||'Sin indicar',kind:$('kind').value,down:d,up:u,ping:p,jitter:j||0,loss:l,date:new Date().toLocaleString('es-ES')};localStorage.setItem('mia_conn_history',JSON.stringify([item,...hist()].slice(0,40)));render()}
+setStatus(err.length?'Prueba terminada con limitaciones':'Análisis completado',100);$('dot').classList.remove('live');$('start').disabled=false;busy=false};
+$('csv').onclick=()=>{const h=hist();if(!h.length){alert('Todavía no hay resultados.');return}const rows=[['Lugar','Red','Descarga Mbps','Subida Mbps','Ping ms','Jitter ms','Fallos','Fecha'],...h.map(x=>[x.place,x.kind,x.down,x.up,x.ping,x.jitter,x.loss,x.date])];const csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(';')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}));a.download='mia-mediciones-conexion.csv';a.click();URL.revokeObjectURL(a.href)};
+$('clear').onclick=()=>{if(confirm('¿Borrar todas las mediciones guardadas?')){localStorage.removeItem('mia_conn_history');render()}};
+</script></body></html>
